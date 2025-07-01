@@ -189,6 +189,30 @@ def export_dynamic_pdf(data, month_names):
     if not basmati_df.empty:
         add_group("🍚 Basmati Product Comparison", basmati_df)
 
+    # --- Grand Total Section ---
+    total_qty = data[f"Quantity {month_names['lm']} 2025"].sum()
+    total_val = data[f"Value {month_names['lm']} 2025"].sum()
+
+    story.append(Paragraph(f"🧾 Total Summary for {month_names['lm']} 2025", styles['Heading2']))
+    story.append(Spacer(1, 6))
+
+    summary_table = Table([
+        ["Total Quantity Sold", int(total_qty)],
+        ["Total Value", f"{total_val:.2f}"]
+    ], colWidths=[80*mm, 30*mm])
+
+    summary_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+        ('GRID', (0, 0), (-1, -1), 0.25, colors.black),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('ALIGN', (1, 0), (-1, -1), 'RIGHT'),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+    ]))
+
+    story.append(summary_table)
+    story.append(Spacer(1, 12))
+
     doc.build(story)
     return buffer.getvalue()
 
